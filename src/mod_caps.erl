@@ -584,7 +584,7 @@ gb_trees_fold_iter(F, Acc, Iter) ->
 
 is_valid_node(Node) ->
     case mongoose_bin:tokens(Node, <<"#">>) of
-        [?MONGOOSE_URI|_] ->
+        [?MONGOOSE_URI | _] ->
             true;
         _ ->
             false

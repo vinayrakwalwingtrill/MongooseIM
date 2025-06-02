@@ -178,8 +178,8 @@ get_prefs1(GlobalDefaultMode, ArcJID) ->
     case mnesia:dirty_read(mam_prefs, SU) of
         [] ->
             {ok, {GlobalDefaultMode, [], []}};
-        [#mam_prefs{default_mode=DefaultMode,
-                    always_rules=ARules, never_rules=NRules}] ->
+        [#mam_prefs{default_mode = DefaultMode,
+                    always_rules = ARules, never_rules = NRules}] ->
             AlwaysJIDs = jids(ArcJID, ARules),
             NeverJIDs = jids(ArcJID, NRules),
             {ok, {DefaultMode, AlwaysJIDs, NeverJIDs}}
@@ -206,7 +206,7 @@ remove_archive(ArcJID) ->
 %% Helpers
 
 -spec su_key(jid:jid()) -> jid:simple_bare_jid().
-su_key(#jid{lserver=LocLServer, luser=LocLUser}) ->
+su_key(#jid{lserver = LocLServer, luser = LocLUser}) ->
     {LocLServer, LocLUser}.
 
 
@@ -220,7 +220,7 @@ jids(ArcJID, Rules) ->
 -spec rule_to_jid(jid:jid(),
     jid:luser() | jid:simple_bare_jid() | jid:simple_jid()
     ) -> jid:simple_jid().
-rule_to_jid(#jid{lserver=LServer}, RemLUser) when is_binary(RemLUser) ->
+rule_to_jid(#jid{lserver = LServer}, RemLUser) when is_binary(RemLUser) ->
     {RemLUser, LServer, <<>>};
 rule_to_jid(_ArcJID, {RemLServer, RemLUser, RemLResource}) ->
     {RemLUser, RemLServer, RemLResource};
@@ -236,11 +236,11 @@ rules(ArcJID, BinJIDs) ->
 
 -spec rule(jid:jid(), jid:jid()) ->
     jid:literal_jid() | jid:simple_bare_jid() | jid:simple_jid().
-rule(#jid{lserver=LServer}, #jid{lserver=LServer, luser=RemLUser, lresource = <<>>}) ->
+rule(#jid{lserver = LServer}, #jid{lserver = LServer, luser = RemLUser, lresource = <<>>}) ->
     RemLUser;
-rule(_ArcJID, #jid{lserver=RemLServer, luser=RemLUser, lresource = <<>>}) ->
+rule(_ArcJID, #jid{lserver = RemLServer, luser = RemLUser, lresource = <<>>}) ->
     {RemLServer, RemLUser};
-rule(_ArcJID, #jid{lserver=RemLServer, luser=RemLUser, lresource=RemLResource}) ->
+rule(_ArcJID, #jid{lserver = RemLServer, luser = RemLUser, lresource = RemLResource}) ->
     {RemLServer, RemLUser, RemLResource}.
 
 

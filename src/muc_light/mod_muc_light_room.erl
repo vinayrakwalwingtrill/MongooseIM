@@ -49,7 +49,7 @@ handle_request(From, RoomJID, OrigPacket, Request, Acc1) ->
 -spec maybe_forget(Acc :: mongoose_acc:t(),
                    RoomUS :: jid:simple_bare_jid(),
                    NewAffUsers :: aff_users(),
-                   Version :: binary() ) -> any().
+                   Version :: binary()) -> any().
 maybe_forget(Acc, {RoomU, RoomS} = RoomUS, [], _Version) ->
     HostType = mod_muc_light_utils:acc_to_host_type(Acc),
     mongoose_hooks:forget_room(HostType, RoomS, RoomU),

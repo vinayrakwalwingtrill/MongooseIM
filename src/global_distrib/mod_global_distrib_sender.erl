@@ -27,7 +27,7 @@
 %%--------------------------------------------------------------------
 
 -spec send(jid:lserver() | pid(), {jid:jid(), jid:jid(), mongoose_acc:t(), exml:element()}) -> ok.
-send(Server, {_,_, Acc, _} = Packet) when is_binary(Server) ->
+send(Server, {_, _, Acc, _} = Packet) when is_binary(Server) ->
     try get_process_for(Server) of
         Worker ->
            send(Worker, Packet)

@@ -799,7 +799,7 @@ unavailable_presence(ItemAttrs, ReasonT) ->
                                          ]}]}.
 
 -spec occupant_jid(user(), 'undefined' | jid:jid()) -> 'error' | jid:jid().
-occupant_jid(#user{nick=Nick}, RoomJID) ->
+occupant_jid(#user{nick = Nick}, RoomJID) ->
     jid:replace_resource(RoomJID, Nick).
 
 
@@ -829,8 +829,8 @@ can_send_to_conference(From, StateData) ->
     is_allowed_nonparticipant(From, StateData).
 
 can_read_conference(UserJID,
-                    StateData=#state{config = #config{members_only = MembersOnly,
-                                                      password_protected = Protected}}) ->
+                    StateData = #state{config = #config{members_only = MembersOnly,
+                                                        password_protected = Protected}}) ->
     Affiliation = get_affiliation(UserJID, StateData),
     %% In a members-only chat room, only owners, admins or members can query a room archive.
     case {MembersOnly, Protected} of
@@ -1013,7 +1013,7 @@ rewrite_next_state(_, {stop, normal, StateData}) ->
 
 
 -spec destroy_temporary_room_if_empty(state(), atom()) -> fsm_return().
-destroy_temporary_room_if_empty(StateData=#state{config=C=#config{}}, NextState) ->
+destroy_temporary_room_if_empty(StateData = #state{config = C = #config{}}, NextState) ->
     case (not C#config.persistent) andalso is_empty_room(StateData)
         andalso StateData#state.http_auth_pids =:= [] of
         true ->
@@ -1378,13 +1378,13 @@ expulse_participant(Packet, From, StateData, Reason1) ->
 
 
 -spec access_admin(state()) -> any().
-access_admin(#state{access=Access}) ->
+access_admin(#state{access = Access}) ->
     {_AccessRoute, _AccessCreate, AccessAdmin, _AccessPersistent} = Access,
     AccessAdmin.
 
 
 -spec access_persistent(state()) -> any().
-access_persistent(#state{access=Access}) ->
+access_persistent(#state{access = Access}) ->
     {_AccessRoute, _AccessCreate, _AccessAdmin, AccessPersistent} = Access,
     AccessPersistent.
 
@@ -1457,7 +1457,7 @@ set_role(JID, Role, StateData) ->
                          JID, StateData).
 
 
--spec get_role( jid:jid(), state()) -> mod_muc:role().
+-spec get_role(jid:jid(), state()) -> mod_muc:role().
 get_role(JID, StateData) ->
     LJID = jid:to_lower(JID),
     case maps:find(LJID, StateData#state.users) of
@@ -1488,7 +1488,7 @@ is_visitor(Jid, StateData) ->
 
 
 -spec is_empty_room(state()) -> boolean().
-is_empty_room(#state{users=Users}) ->
+is_empty_room(#state{users = Users}) ->
     is_empty_map(Users).
 
 
@@ -1503,7 +1503,7 @@ map_foreach_value(F, Map) ->
 
 
 -spec count_users(state()) -> non_neg_integer().
-count_users(#state{users=Users}) ->
+count_users(#state{users = Users}) ->
     maps:size(Users).
 
 
@@ -1937,7 +1937,7 @@ decode_http_auth_response(Body) ->
         {0, _} ->
             allowed;
         {AuthCode, Msg} ->
-            {invalid_password, iolist_to_binary([integer_to_list(AuthCode), $ , Msg])}
+            {invalid_password, iolist_to_binary([integer_to_list(AuthCode), hd(" "), Msg])}
     catch
         error:_ -> error
     end.
@@ -2126,7 +2126,7 @@ send_update_presence(JID, Reason, StateData) ->
 
 
 -spec foreach_matched_jid(fun((_) -> 'ok'), jid:jid(), state()) -> ok.
-foreach_matched_jid(F, JID, #state{users=Users}) ->
+foreach_matched_jid(F, JID, #state{users = Users}) ->
     LJID = jid:to_lower(JID),
     case LJID of
         %% Match by bare JID
@@ -2151,7 +2151,7 @@ foreach_matched_jid(F, JID, #state{users=Users}) ->
 
 -spec foreach_matched_user(fun((_) -> 'ok'), jid:simple_jid() | jid:jid(),
                            state()) -> ok.
-foreach_matched_user(F, JID, #state{users=Users}) ->
+foreach_matched_user(F, JID, #state{users = Users}) ->
     LJID = jid:to_lower(JID),
     case LJID of
         %% Match by bare JID
@@ -2171,43 +2171,43 @@ foreach_matched_user(F, JID, #state{users=Users}) ->
 
 
 -spec foreach_user(fun((_) -> 'ok'), state()) -> any().
-foreach_user(F, #state{users=Users}) ->
+foreach_user(F, #state{users = Users}) ->
     map_foreach_value(F, Users).
 
 
 -spec erase_matched_users(jid:simple_jid() | jid:jid(), state()) -> state().
-erase_matched_users(JID, StateData=#state{users=Users, sessions=Sessions}) ->
+erase_matched_users(JID, StateData = #state{users = Users, sessions = Sessions}) ->
     LJID = jid:to_lower(JID),
     {NewUsers, NewSessions} = erase_matched_users_map(LJID, Users, Sessions),
-    notify_users_modified(StateData#state{users=NewUsers, sessions=NewSessions}).
+    notify_users_modified(StateData#state{users = NewUsers, sessions = NewSessions}).
 
 
 -spec erase_matched_users_map(error | jid:simple_jid(),
                               users_map(), sessions_map()) -> any().
 erase_matched_users_map({U, S, <<>>}, Users, Sessions) ->
-    FF = fun({U0, S0, _} = J, #user{nick=Nick}, {Us, Ss}) when U =:= U0 andalso S =:= S0->
+    FF = fun({U0, S0, _} = J, #user{nick = Nick}, {Us, Ss}) when U =:= U0 andalso S =:= S0 ->
                  {maps:remove(J, Us), maps:remove(Nick, Ss)};
             (_, _, Acc) ->
                  Acc
          end,
     maps:fold(FF, {Users, Sessions}, Users);
 erase_matched_users_map(LJID, Users, Sessions) ->
-    {ok, #user{nick=Nick}} = maps:find(LJID, Users),
+    {ok, #user{nick = Nick}} = maps:find(LJID, Users),
     {maps:remove(LJID, Users), maps:remove(Nick, Sessions)}.
 
 
 -spec update_matched_users(F :: fun((user()) -> user()), JID :: jid:jid(),
                            state()) -> state().
-update_matched_users(F, JID, StateData=#state{users=Users}) ->
+update_matched_users(F, JID, StateData = #state{users = Users}) ->
     LJID = jid:to_lower(JID),
     NewUsers = update_matched_users_map(F, LJID, Users),
-    notify_users_modified(StateData#state{users=NewUsers}).
+    notify_users_modified(StateData#state{users = NewUsers}).
 
 
 -spec update_matched_users_map(fun((user()) -> user()),
                                error | jid:simple_jid(), users_map()) -> any().
 update_matched_users_map(F, {U, S, <<>>}, Users) ->
-    FF = fun({U0, S0, _} = J, User, Us) when U =:= U0 andalso S =:= S0->
+    FF = fun({U0, S0, _} = J, User, Us) when U =:= U0 andalso S =:= S0 ->
                  maps:put(J, F(User), Us);
             (_, _, Us) ->
                  Us
@@ -2296,13 +2296,13 @@ send_new_presence_to_single(NJID, #user{jid = RealJID, nick = Nick, last_presenc
                                     false ->
                                         Status
                                 end,
-                      Status1 = case ((StateData#state.config)#config.anonymous==false) of
+                      Status1 = case ((StateData#state.config)#config.anonymous == false) of
                                     true ->
                                         [status_code(100) | Status0];
                                     false ->
                                         Status0
                                 end,
-                      case ((NJID == ReceiverInfo#user.jid)==true) of
+                      case (NJID == ReceiverInfo#user.jid) of
                           true ->
                               [status_code(110) | Status1];
                           false ->
@@ -2373,9 +2373,9 @@ send_config_update(Type, StateData) ->
 
 
 -spec send_invitation(jid:jid(), jid:jid(), binary(), state()) -> mongoose_acc:t().
-send_invitation(From, To, Reason, StateData=#state{host=Host,
-                                                   server_host=ServerHost,
-                                                   jid=RoomJID}) ->
+send_invitation(From, To, Reason, StateData = #state{host = Host,
+                                                     server_host = ServerHost,
+                                                     jid = RoomJID}) ->
     mongoose_hooks:invitation_sent(Host, ServerHost, RoomJID, From, To, Reason),
     Config = StateData#state.config,
     Password = case Config#config.password_protected of
@@ -2856,7 +2856,7 @@ find_changed_items(_UJID, _UAffiliation, _URole, _Items, _Lang, _StateData, _Res
 -spec get_affected_jid(Item :: exml:element(),
                        Lang :: ejabberd:lang(),
                        StateData :: state()) ->
-    {value,jid:jid()} | {error, exml:element()}.
+    {value, jid:jid()} | {error, exml:element()}.
 get_affected_jid(Item, Lang, StateData) ->
     case {exml_query:attr(Item, <<"jid">>), exml_query:attr(Item, <<"nick">>)} of
         {S, _} when undefined =/= S ->
@@ -2882,7 +2882,7 @@ get_affected_jid(Item, Lang, StateData) ->
             {error, mongoose_xmpp_errors:bad_request()}
     end.
 
--spec check_changed_item(jid:jid(), mod_muc:affiliation(), mod_muc:role(),jid:jid(), exml:element(),
+-spec check_changed_item(jid:jid(), mod_muc:affiliation(), mod_muc:role(), jid:jid(), exml:element(),
                          [exml:element()], ejabberd:lang(), state(), [res_row()]) ->
     find_changed_items_res().
 check_changed_item(UJID, UAffiliation, URole, JID, Item, Items, Lang, StateData, Res) ->
@@ -2929,7 +2929,7 @@ check_changed_item(UJID, UAffiliation, URole, JID, Item, Items, Lang, StateData,
         Err -> Err
     end.
 
--spec is_owner(UJID ::jid:jid(), StateData :: state()) -> boolean().
+-spec is_owner(UJID :: jid:jid(), StateData :: state()) -> boolean().
 is_owner(UJID, StateData) ->
     case search_affiliation(owner, StateData) of
         [{OJID, _}] -> jid:to_bare(OJID) /= jid:to_lower(jid:to_bare(UJID));
@@ -3187,7 +3187,7 @@ process_authorized_iq_owner(From, get, Lang, SubEl, StateData, _StateName) ->
             end
     end.
 
--spec process_authorized_submit_owner(From ::jid:jid(), [{binary(), [binary()]}],
+-spec process_authorized_submit_owner(From :: jid:jid(), [{binary(), [binary()]}],
                                       StateData :: state()) ->
     {error, exml:element()} | {result, [exml:child()], state() | stop}.
 process_authorized_submit_owner(_From, [], StateData) ->
@@ -3583,7 +3583,7 @@ remove_nonmembers(StateData) ->
 -spec set_opts(Opts :: [{atom(), term()}], state()) -> state().
 set_opts([], SD) ->
     SD;
-set_opts([{Opt, Val} | Opts], SD=#state{config = C = #config{}}) ->
+set_opts([{Opt, Val} | Opts], SD = #state{config = C = #config{}}) ->
     NSD = case Opt of
         title ->
             SD#state{config = C#config{title = Val}};
@@ -3704,14 +3704,14 @@ remove_each_occupant_from_room(DestroyEl, StateData) ->
 
 
 -spec send_to_occupants(exml:element(), state()) -> any().
-send_to_occupants(Packet, StateData=#state{jid=RoomJID}) ->
-    F = fun(User=#user{jid=UserJID}) ->
+send_to_occupants(Packet, StateData = #state{jid = RoomJID}) ->
+    F = fun(User = #user{jid = UserJID}) ->
         ejabberd_router:route(occupant_jid(User, RoomJID), UserJID, Packet)
         end,
     foreach_user(F, StateData).
 
 -spec send_to_all_users(exml:element(), state()) -> any().
-send_to_all_users(Packet, StateData=#state{jid=RoomJID}) ->
+send_to_all_users(Packet, StateData = #state{jid = RoomJID}) ->
     F = fun(#user{jid = UserJID}) ->
           ejabberd_router:route(RoomJID, UserJID, Packet)
       end,
@@ -3853,14 +3853,14 @@ get_roomdesc_tail(StateData, Lang) ->
 
 
 -spec get_mucroom_disco_items(state()) -> [exml:element()].
-get_mucroom_disco_items(StateData=#state{jid=RoomJID}) ->
+get_mucroom_disco_items(StateData = #state{jid = RoomJID}) ->
     maps:fold(fun(_LJID, User, Acc) ->
                       Item = disco_item(User, RoomJID),
-                      [Item|Acc]
+                      [Item | Acc]
               end, [], StateData#state.users).
 
 -spec disco_item(user(), 'undefined' | jid:jid()) -> exml:element().
-disco_item(User=#user{nick=Nick}, RoomJID) ->
+disco_item(User = #user{nick = Nick}, RoomJID) ->
     #xmlel{
         name = <<"item">>,
         attrs = #{<<"jid">> => jid:to_binary(occupant_jid(User, RoomJID)),
@@ -3916,7 +3916,7 @@ check_invitation(FromJID, Els, Lang, StateData) ->
 -spec unsafe_check_invitation(jid:jid(), [exml:child()],
                               ejabberd:lang(), state()) -> {ok, [jid:jid()]}.
 unsafe_check_invitation(FromJID, Els, Lang,
-                        StateData=#state{host=Host, server_host=ServerHost, jid=RoomJID}) ->
+                        StateData = #state{host = Host, server_host = ServerHost, jid = RoomJID}) ->
     FAffiliation = get_affiliation(FromJID, StateData),
     CanInvite = (StateData#state.config)#config.allow_user_invites
                 orelse (FAffiliation == admin)
@@ -3938,9 +3938,9 @@ unsafe_check_invitation(FromJID, Els, Lang,
             {ok, JIDs}
     end.
 
--spec create_invite(FromJID ::jid:jid(), InviteEl :: exml:element(),
+-spec create_invite(FromJID :: jid:jid(), InviteEl :: exml:element(),
                     Lang :: ejabberd:lang(), StateData :: state()) ->
-    {JID ::jid:jid(), Reason :: binary(), Msg :: exml:element()}.
+    {JID :: jid:jid(), Reason :: binary(), Msg :: exml:element()}.
 create_invite(FromJID, InviteEl, Lang, StateData) ->
     JID = decode_destination_jid(InviteEl),
     %% Create an invitation message and send it to the user.
@@ -3985,7 +3985,7 @@ find_invite_elems(Els) ->
         InviteEls =
             [InviteEl || #xmlel{name = <<"invite">>} = InviteEl <- Els1],
         case InviteEls of
-            [_|_] ->
+            [_ | _] ->
                 InviteEls;
             _ ->
                 throw({error, mongoose_xmpp_errors:bad_request()})
@@ -3996,8 +3996,8 @@ find_invite_elems(Els) ->
 
 
 -spec create_password_elem(state()) -> [exml:element()].
-create_password_elem(#state{config=#config{password_protected=IsProtected,
-                                           password=Password}}) ->
+create_password_elem(#state{config = #config{password_protected = IsProtected,
+                                             password = Password}}) ->
     case IsProtected of
         true ->
         [#xmlel{
@@ -4020,10 +4020,10 @@ invite_body_elem(FromJID, Reason, Lang, StateData) ->
 -spec invite_body_text(jid:jid(), binary(), ejabberd:lang(), state()) -> binary().
 invite_body_text(FromJID, Reason, Lang,
         #state{
-            jid=RoomJID,
-            config=#config{
-                password_protected=IsProtected,
-                password=Password}}) ->
+            jid = RoomJID,
+            config = #config{
+                password_protected = IsProtected,
+                password = Password}}) ->
     BFromJID = jid:to_binary(FromJID),
     BRoomJID = jid:to_binary(RoomJID),
     ITranslate = service_translations:do(Lang, <<" invites you to the room ">>),
@@ -4050,7 +4050,7 @@ create_invite_message_elem(InviteEl, BodyEl, PasswdEl, Reason)
     UserXEl = #xmlel{
         name = <<"x">>,
         attrs = #{<<"xmlns">> => ?NS_MUC_USER},
-        children = [InviteEl|PasswdEl]},
+        children = [InviteEl | PasswdEl]},
     #xmlel{
         name = <<"message">>,
         attrs = #{<<"type">> => <<"normal">>},

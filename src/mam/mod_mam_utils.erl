@@ -262,24 +262,24 @@ replace_arcid_elem(ElemName, By, Id, Packet) ->
                        delete_arcid_elem(ElemName, By, Packet)).
 
 -spec append_arcid_elem(ElemName :: binary(), By :: binary(), Id :: binary(),
-                        Packet :: exml:element()) ->exml:element().
+                        Packet :: exml:element()) -> exml:element().
 append_arcid_elem(<<"stanza-id">>, By, Id, Packet) ->
     Archived = #xmlel{
                   name = <<"stanza-id">>,
-                  attrs=#{<<"by">> => By,
-                          <<"id">> => Id,
-                          <<"xmlns">> => ?NS_STANZAID}},
+                  attrs = #{<<"by">> => By,
+                            <<"id">> => Id,
+                            <<"xmlns">> => ?NS_STANZAID}},
     jlib:append_subtags(Packet, [Archived]);
 append_arcid_elem(ElemName, By, Id, Packet) ->
     Archived = #xmlel{
                   name = ElemName,
-                  attrs=#{<<"by">> => By,
-                          <<"id">> => Id}},
+                  attrs = #{<<"by">> => By,
+                            <<"id">> => Id}},
     jlib:append_subtags(Packet, [Archived]).
 
 -spec delete_arcid_elem(ElemName :: binary(), By :: binary(), exml:element()) -> exml:element().
-delete_arcid_elem(ElemName, By, Packet=#xmlel{children=Cs}) ->
-    Packet#xmlel{children=[C || C <- Cs, not is_arcid_elem_for(ElemName, C, By)]}.
+delete_arcid_elem(ElemName, By, Packet = #xmlel{children = Cs}) ->
+    Packet#xmlel{children = [C || C <- Cs, not is_arcid_elem_for(ElemName, C, By)]}.
 
 
 is_x_user_element(#xmlel{name = <<"x">>, attrs = #{<<"xmlns">> := ?NS_MUC_USER}}) ->
@@ -309,14 +309,14 @@ x_user_item(FromJID, Role, Affiliation) ->
                  <<"role">> => atom_to_binary(Role, latin1)}}.
 
 -spec delete_x_user_element(exml:element()) -> exml:element().
-delete_x_user_element(Packet=#xmlel{children=Cs}) ->
-    Packet#xmlel{children=[C || C <- Cs, not is_x_user_element(C)]}.
+delete_x_user_element(Packet = #xmlel{children = Cs}) ->
+    Packet#xmlel{children = [C || C <- Cs, not is_x_user_element(C)]}.
 
 -spec packet_to_x_user_jid(exml:element()) -> jid:jid() | error | undefined.
-packet_to_x_user_jid(#xmlel{children=Cs}) ->
+packet_to_x_user_jid(#xmlel{children = Cs}) ->
     case [C || C <- Cs, is_x_user_element(C)] of
         [] -> undefined;
-        [X|_] ->
+        [X | _] ->
             case exml_query:path(X, [{element, <<"item">>}, {attr, <<"jid">>}]) of
                 undefined -> undefined;
                 BinaryJid -> jid:from_binary(BinaryJid)
@@ -329,7 +329,7 @@ get_one_of_path(Elem, List) ->
 
 
 -spec get_one_of_path(_, list(T), T) -> T when T :: any().
-get_one_of_path(Elem, [H|T], Def) ->
+get_one_of_path(Elem, [H | T], Def) ->
     case exml_query:path(Elem, H) of
         undefined -> get_one_of_path(Elem, T, Def);
         Val  -> Val
@@ -343,7 +343,7 @@ get_one_of_path(_Elem, [], Def) ->
 %% "result", "delay" or "no-store" elements.
 %% @end
 -spec is_archivable_message(module(), direction(), exml:element(), boolean()) -> boolean().
-is_archivable_message(Mod, Dir, Packet=#xmlel{name = <<"message">>}, ArchiveChatMarkers) ->
+is_archivable_message(Mod, Dir, Packet = #xmlel{name = <<"message">>}, ArchiveChatMarkers) ->
     Type = exml_query:attr(Packet, <<"type">>, <<"normal">>),
     is_valid_message_type(Mod, Dir, Type) andalso
         is_valid_message(Mod, Dir, Packet, ArchiveChatMarkers);
@@ -518,7 +518,7 @@ forwarded(Packet, TS, SrcJID) ->
 delay(TS, SrcJID) ->
     jlib:timestamp_to_xml(TS, SrcJID, <<>>).
 
-replace_from_attribute(From, Packet=#xmlel{attrs = Attrs}) ->
+replace_from_attribute(From, Packet = #xmlel{attrs = Attrs}) ->
     Packet#xmlel{attrs = Attrs#{<<"from">> => jid:to_binary(From)}}.
 
 %% @doc Generates tag `<result />'.
@@ -528,7 +528,7 @@ replace_from_attribute(From, Packet=#xmlel{attrs = Attrs}) ->
 result(MamNs, QueryID, MessageUID, Children) when is_list(Children) ->
     %% <result xmlns='urn:xmpp:mam:tmp' queryid='f27' id='28482-98726-73623' />
     Attrs = case QueryID =/= undefined andalso QueryID =/= <<>>  of
-              true->
+              true ->
                 #{<<"queryid">> => QueryID};
               false ->
                 #{}
@@ -987,7 +987,7 @@ maybe_integer(Bin, _Def) when is_binary(Bin) ->
                                 undefined | integer().
 apply_start_border(undefined, StartID) ->
     StartID;
-apply_start_border(#mam_borders{after_id=AfterID, from_id=FromID}, StartID) ->
+apply_start_border(#mam_borders{after_id = AfterID, from_id = FromID}, StartID) ->
     maybe_max(maybe_next_id(AfterID), maybe_max(FromID, StartID)).
 
 
@@ -995,7 +995,7 @@ apply_start_border(#mam_borders{after_id=AfterID, from_id=FromID}, StartID) ->
                               undefined | integer().
 apply_end_border(undefined, EndID) ->
     EndID;
-apply_end_border(#mam_borders{before_id=BeforeID, to_id=ToID}, EndID) ->
+apply_end_border(#mam_borders{before_id = BeforeID, to_id = ToID}, EndID) ->
     maybe_min(maybe_previous_id(BeforeID), maybe_min(ToID, EndID)).
 
 -spec calculate_msg_id_borders(mod_mam:borders() | undefined,
@@ -1054,7 +1054,7 @@ maybe_max(X, Y) ->
 
 -spec maybe_last([T]) -> undefined | {ok, T}.
 maybe_last([]) -> undefined;
-maybe_last([_|_] = L) -> {ok, lists:last(L)}.
+maybe_last([_ | _] = L) -> {ok, lists:last(L)}.
 
 -spec maybe_next_id('undefined' | non_neg_integer()) -> 'undefined' | pos_integer().
 maybe_next_id(undefined) ->
@@ -1107,8 +1107,8 @@ is_complete_result_page_using_offset(#{page_size := PageSize} = Params,
 %% If there are some more recent messages in archive, this function returns false.
 -spec is_most_recent_page(PageSize, TotalCount, Offset, MessageRows) -> boolean() when
     PageSize    :: non_neg_integer(),
-    TotalCount  :: non_neg_integer()|undefined,
-    Offset      :: non_neg_integer()|undefined,
+    TotalCount  :: non_neg_integer() | undefined,
+    Offset      :: non_neg_integer() | undefined,
     MessageRows :: list().
 is_most_recent_page(PageSize, _TotalCount, _Offset, MessageRows)
     when length(MessageRows) < PageSize ->
@@ -1349,7 +1349,7 @@ incremental_delete_domain(HostType, Domain, Limit, [Query | MoreQueries] = AllQu
     {done | remove_more, non_neg_integer()}.
 is_removing_done({updated, N}, Limit) when N < Limit ->
     {done, N};
-is_removing_done({updated, N}, _)->
+is_removing_done({updated, N}, _) ->
     {remove_more, N}.
 
 -spec is_mam_muc_enabled(jid:lserver(), mongooseim:host_type()) -> boolean().

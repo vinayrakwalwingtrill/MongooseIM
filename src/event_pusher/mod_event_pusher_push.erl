@@ -268,7 +268,7 @@ maybe_remove_push_node_from_sessions_info(From, PubSubJid, Node) ->
 
 -spec find_and_remove_push_node(jid:jid(), [ejabberd_sm:session()],
                                 jid:jid(), pubsub_node() | undefined) -> ok.
-find_and_remove_push_node(_From, [], _,_) ->
+find_and_remove_push_node(_From, [], _, _) ->
     ok;
 find_and_remove_push_node(From, [RawSession | Rest], PubSubJid, Node) ->
     case my_push_node(RawSession, PubSubJid, Node) of

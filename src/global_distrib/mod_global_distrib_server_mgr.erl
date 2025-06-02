@@ -322,13 +322,13 @@ do_call(Server, Msg) ->
     MgrName = mod_global_distrib_utils:server_to_mgr_name(Server),
     try
         gen_server:call(MgrName, Msg)
-    catch exit:{timeout,_} = Reason:Stacktrace ->
+    catch exit:{timeout, _} = Reason:Stacktrace ->
         catch gen_server:cast(MgrName, {call_timeout, self(), Msg}),
         erlang:raise(exit, Reason, Stacktrace)
     end.
 
 -spec schedule_refresh(State :: state()) -> state().
-schedule_refresh(#state{ refresh_interval = Interval, last_endpoints = [_|_] } = State) ->
+schedule_refresh(#state{ refresh_interval = Interval, last_endpoints = [_ | _] } = State) ->
     do_schedule_refresh(State, Interval);
 schedule_refresh(#state{ refresh_interval_when_disconnected = Interval } = State) ->
     %% Try more often by default when get_endpoints returns empty list

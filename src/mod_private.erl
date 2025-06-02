@@ -110,7 +110,7 @@ remove_user(Acc, #{jid := #jid{luser = LUser, lserver = LServer}}, #{host_type :
     mongoose_lib:log_if_backend_error(R, ?MODULE, ?LINE, {Acc, LUser, LServer}),
     {ok, Acc}.
 
--spec remove_domain(Acc, Params, Extra) -> {ok , Acc} when
+-spec remove_domain(Acc, Params, Extra) -> {ok, Acc} when
       Acc :: mongoose_domain_api:remove_domain_acc(),
       Params :: #{domain := jid:lserver()},
       Extra :: gen_hook:extra().
@@ -161,7 +161,7 @@ process_iq(Acc, _From, _To, IQ, _Extra) ->
 
 choose_strategy(true, get) -> get;
 choose_strategy(true, set) -> set;
-choose_strategy(_,    _  ) -> forbidden.
+choose_strategy(_, _) -> forbidden.
 
 element_to_namespace(#xmlel{} = El) ->
     exml_query:attr(El, <<"xmlns">>, <<>>);

@@ -196,7 +196,7 @@ parse_command_type(<<"unblock">>) -> unblock.
 %% * sent 'unavailable' msg to blocked contacts, or 'available' to unblocked
 %%
 -spec process_blocking_iq_set(Type :: block | unblock, Acc :: mongoose_acc:t(),
-                              LUser:: binary(), LServer:: binary(),
+                              LUser :: binary(), LServer :: binary(),
                               CurrList :: [listitem()], Users :: [binary()]) ->
     {mongoose_acc:t(), {ok, [binary()], [listitem()], block | unblock | unblock_all} |
                        {error, exml:element()}}.
@@ -238,7 +238,7 @@ complete_iq_set(blocking_command, Acc, LUser, LServer, {ok, Changed, List, Type}
 %%    {result, []}.
 
 -spec blocking_list_modify(Type :: block | unblock, New :: [binary()], Old :: [listitem()]) ->
-    {block|unblock|unblock_all, [binary()], [listitem()]}.
+    {block | unblock | unblock_all, [binary()], [listitem()]}.
 blocking_list_modify(block, Change, Old) ->
     N = make_blocking_list(Change),
     {_, O} = remove_from(Change, Old),
@@ -259,21 +259,21 @@ set_order(L) ->
 
 set_order(_, N, []) ->
     N;
-set_order(Idx, N, [H|T]) ->
-    set_order(Idx + 1, [H#listitem{order = Idx}|N], T).
+set_order(Idx, N, [H | T]) ->
+    set_order(Idx + 1, [H#listitem{order = Idx} | N], T).
 
 remove_from(ToRem, Lst) ->
     remove_from(ToRem, [], [], Lst).
 
 remove_from(_, Removed, New, []) ->
     {Removed, New};
-remove_from(ToRem, Removed, New, [H|T]) ->
+remove_from(ToRem, Removed, New, [H | T]) ->
     Bin = jid:to_binary(H#listitem.value),
     case lists:member(Bin, ToRem) of
         true ->
-            remove_from(ToRem, [Bin|Removed], New, T);
+            remove_from(ToRem, [Bin | Removed], New, T);
         false ->
-            remove_from(ToRem, Removed, [H|New], T)
+            remove_from(ToRem, Removed, [H | New], T)
     end.
 
 make_blocking_list(L) ->
@@ -281,12 +281,12 @@ make_blocking_list(L) ->
 
 make_blocking_list(New, []) ->
     New;
-make_blocking_list(New, [H|T]) ->
+make_blocking_list(New, [H | T]) ->
     case make_blocking_list_entry(H) of
         false ->
             make_blocking_list(New, T);
         Entry ->
-            make_blocking_list([Entry|New], T)
+            make_blocking_list([Entry | New], T)
     end.
 
 make_blocking_list_entry(J) ->

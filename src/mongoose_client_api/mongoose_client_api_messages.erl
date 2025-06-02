@@ -159,7 +159,7 @@ parent(Msg) ->
         ThreadParent -> [{<<"parent">>, ThreadParent}]
     end.
 
-convert_prop_child(Child)->
+convert_prop_child(Child) ->
     Name = exml_query:path(Child, [{element, <<"name">>}, cdata]),
     Value = exml_query:path(Child, [{element, <<"value">>}, cdata]),
     {Name, Value}.

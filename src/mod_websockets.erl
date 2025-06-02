@@ -56,7 +56,8 @@
           ping_rate :: integer() | none,
           max_stanza_size :: integer() | infinity,
           peercert :: undefined | passed | binary()
-          %% the passed value is used to clear the certificate from the handlers state after it's passed down to the socket()
+          %% the passed value is used to clear the certificate from the handlers state
+          %% after it's passed down to the socket()
          }).
 
 -type socket() :: #websocket{}.

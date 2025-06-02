@@ -673,7 +673,7 @@ sm_remove_connection(Acc, SID, JID, Info, Reason) ->
 
 -spec unset_presence(Acc, JID, Status) -> Result when
     Acc :: mongoose_acc:t(),
-    JID:: jid:jid(),
+    JID :: jid:jid(),
     Status :: binary(),
     Result :: mongoose_acc:t().
 unset_presence(Acc, JID, Status) ->
@@ -723,7 +723,7 @@ roster_get_jid_info(HostType, ToJID, RemBareJID) ->
 %%% user's subscription list.
 -spec roster_get_subscription_lists(HostType, Acc, JID) -> Result when
     HostType :: mongooseim:host_type(),
-    Acc ::mongoose_acc:t(),
+    Acc :: mongoose_acc:t(),
     JID :: jid:jid(),
     Result :: mongoose_acc:t().
 roster_get_subscription_lists(HostType, Acc, JID) ->

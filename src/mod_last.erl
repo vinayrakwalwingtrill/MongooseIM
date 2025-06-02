@@ -145,7 +145,7 @@ get_node_uptime() ->
         {ok, {node_start, Seconds}} ->
             erlang:system_time(second) - Seconds;
         {error, not_found} ->
-            trunc(element(1, erlang:statistics(wall_clock))/1000)
+            trunc(element(1, erlang:statistics(wall_clock)) / 1000)
     end.
 
 %%%

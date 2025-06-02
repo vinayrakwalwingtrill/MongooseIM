@@ -169,7 +169,7 @@ is_json_arg(#{kind := Kind, wrap := Wrap}) when Kind =:= <<"SCALAR">>;
 
 -spec check_args(context()) -> context().
 check_args(Ctx = #{args_spec := ArgsSpec, vars := Vars}) ->
-    MissingArgs = [Name || #{name := Name, wrap := [required|_]} <- ArgsSpec,
+    MissingArgs = [Name || #{name := Name, wrap := [required | _]} <- ArgsSpec,
                            not maps:is_key(Name, Vars)],
     case MissingArgs of
         [] -> Ctx;

@@ -29,7 +29,7 @@ crash(_Ctx, Err = #{type := Type}) ->
       extensions => #{code => resolver_crash}}.
 
 %% @doc Format error that occurred in any phase including HTTP request decoding.
--spec format_error(term())-> {integer(), err_msg()}.
+-spec format_error(term()) -> {integer(), err_msg()}.
 format_error(#{phase := Phase, error_term := Term} = Err) when Phase =:= authorize;
                                                                Phase =:= decode;
                                                                Phase =:= parse;

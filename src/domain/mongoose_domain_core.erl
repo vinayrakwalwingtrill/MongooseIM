@@ -75,7 +75,7 @@ get_domains_by_host_type(HostType) when is_binary(HostType) ->
 domains_count() ->
     ets:info(?TABLE, size).
 
--spec for_each_domain(host_type(), fun((host_type(), domain())-> any())) -> ok.
+-spec for_each_domain(host_type(), fun((host_type(), domain()) -> any())) -> ok.
 for_each_domain(HostType, Func) ->
     ets:safe_fixtable(?TABLE, true),
     MS = ets:fun2ms(fun({Domain, HT, _}) when HT =:= HostType ->
@@ -93,7 +93,7 @@ get_all_outdated(CurrentSource) ->
     ets:select(?TABLE, MS).
 
 heads(List) ->
-    [H || [H|_] <- List].
+    [H || [H | _] <- List].
 
 pairs(List) ->
     [{K, V} || [K, V] <- List].
@@ -221,4 +221,3 @@ handle_insert(Domain, HostType, Source) ->
             {error, unknown_host_type}
 
     end.
-

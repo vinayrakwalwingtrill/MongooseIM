@@ -137,7 +137,7 @@ get_component(LDomain, Node) ->
 
 filter_component([], _) ->
     no_route;
-filter_component([Comp|Tail], Node) ->
+filter_component([Comp | Tail], Node) ->
     case Comp of
         #external_component{node = Node} ->
             Comp;

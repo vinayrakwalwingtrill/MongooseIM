@@ -180,9 +180,9 @@ apply_changes(Rows) ->
 count(X, List) ->
     count(X, List, 0).
 
-count(X, [X|T], Count) ->
+count(X, [X | T], Count) ->
     count(X, T, Count + 1);
-count(X, [_|T], Count) ->
+count(X, [_ | T], Count) ->
     count(X, T, Count);
 count(_, [], Count) ->
     Count.

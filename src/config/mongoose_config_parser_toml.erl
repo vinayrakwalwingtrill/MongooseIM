@@ -94,8 +94,8 @@ ensure_keys(Keys, Section) ->
 parse_section(Path, M, #section{items = Items, defaults = Defaults}) ->
     FilteredDefaults = maps:filter(fun(K, _V) -> not maps:is_key(K, M) end, Defaults),
     M1 = maps:merge(get_always_included(Items), M),
-    ProcessedConfig = maps:map(fun(K, V) -> handle([K|Path], V, get_spec_for_key(K, Items)) end, M1),
-    ProcessedDefaults = maps:map(fun(K, V) -> handle_default([K|Path], V, maps:get(K, Items)) end,
+    ProcessedConfig = maps:map(fun(K, V) -> handle([K | Path], V, get_spec_for_key(K, Items)) end, M1),
+    ProcessedDefaults = maps:map(fun(K, V) -> handle_default([K | Path], V, maps:get(K, Items)) end,
                                  FilteredDefaults),
     lists:flatmap(fun({_K, ConfigParts}) -> ConfigParts end,
                   lists:keysort(1, maps:to_list(maps:merge(ProcessedDefaults, ProcessedConfig)))).
@@ -119,7 +119,7 @@ get_always_included(Items) ->
 parse_list(Path, L, #list{items = ItemSpec}) ->
     lists:flatmap(fun(Elem) ->
                           Key = item_key(Path, Elem),
-                          handle([Key|Path], Elem, ItemSpec)
+                          handle([Key | Path], Elem, ItemSpec)
                   end, L).
 
 -spec handle(path(), toml_value(), mongoose_config_spec:config_node()) -> [config_part()].
@@ -134,7 +134,7 @@ handle_default(Path, Value, Spec) ->
 
 -spec handle(path(), toml_value(), mongoose_config_spec:config_node(), [step()]) -> [config_part()].
 handle(Path, Value, Spec, Steps) ->
-    lists:foldl(fun(_, [#{what := _, class := error}|_] = Errors) ->
+    lists:foldl(fun(_, [#{what := _, class := error} | _] = Errors) ->
                         Errors;
                    (Step, Acc) ->
                         try_step(Step, Path, Value, Acc, Spec)
@@ -230,14 +230,14 @@ wrap_spec(#list{wrap = Wrap}) -> Wrap;
 wrap_spec(#option{wrap = Wrap}) -> Wrap.
 
 -spec wrap(path(), config_part(), mongoose_config_spec:wrapper()) -> [config_part()].
-wrap([Key|_] = Path, V, host_config) ->
+wrap([Key | _] = Path, V, host_config) ->
     [{{b2a(Key), get_host(Path)}, V}];
-wrap([Key|_] = Path, V, global_config) ->
+wrap([Key | _] = Path, V, global_config) ->
     global = get_host(Path),
     [{b2a(Key), V}];
-wrap([item|_], V, default) ->
+wrap([item | _], V, default) ->
     [V];
-wrap([Key|_], V, default) ->
+wrap([Key | _], V, default) ->
     [{b2a(Key), V}];
 wrap(_Path, V, item) ->
     [V];

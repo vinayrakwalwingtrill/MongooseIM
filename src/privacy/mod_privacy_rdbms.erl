@@ -347,28 +347,28 @@ replace_data_rows(HostType, ID, Rows) when is_integer(ID) ->
 %% We assume that there are no record duplicates with the same Order.
 %% It's checked in the main module for the New argument.
 %% It's checked by the database for the Old argument.
-diff_rows(ID, [H|New], [H|Old], Ops) ->
+diff_rows(ID, [H | New], [H | Old], Ops) ->
     diff_rows(ID, New, Old, Ops); %% Not modified
-diff_rows(ID, [NewH|NewT] = New, [OldH|OldT] = Old, Ops) ->
+diff_rows(ID, [NewH | NewT] = New, [OldH | OldT] = Old, Ops) ->
     NewOrder = hd(NewH),
     OldOrder = hd(OldH),
     if NewOrder =:= OldOrder ->
            Op = {privacy_data_update, tl(NewH) ++ [ID, OldOrder]},
-           diff_rows(ID, NewT, OldT, [Op|Ops]);
+           diff_rows(ID, NewT, OldT, [Op | Ops]);
        NewOrder > OldOrder ->
            Op = {privacy_data_delete, [ID, OldOrder]},
-           diff_rows(ID, New, OldT, [Op|Ops]);
+           diff_rows(ID, New, OldT, [Op | Ops]);
        true ->
-           Op = {privacy_data_insert, [ID|NewH]},
-           diff_rows(ID, NewT, Old, [Op|Ops])
+           Op = {privacy_data_insert, [ID | NewH]},
+           diff_rows(ID, NewT, Old, [Op | Ops])
     end;
-diff_rows(ID, [], [OldH|OldT], Ops) ->
+diff_rows(ID, [], [OldH | OldT], Ops) ->
     OldOrder = hd(OldH),
     Op = {privacy_data_delete, [ID, OldOrder]},
-    diff_rows(ID, [], OldT, [Op|Ops]);
-diff_rows(ID, [NewH|NewT], [], Ops) ->
-    Op = {privacy_data_insert, [ID|NewH]},
-    diff_rows(ID, NewT, [], [Op|Ops]);
+    diff_rows(ID, [], OldT, [Op | Ops]);
+diff_rows(ID, [NewH | NewT], [], Ops) ->
+    Op = {privacy_data_insert, [ID | NewH]},
+    diff_rows(ID, NewT, [], [Op | Ops]);
 diff_rows(_ID, [], [], Ops) ->
     Ops.
 

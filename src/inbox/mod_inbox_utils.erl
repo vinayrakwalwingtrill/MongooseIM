@@ -66,7 +66,7 @@ reset_unread_count_to_zero(Acc, From, Remote) ->
     InboxEntryKey = build_inbox_entry_key(From, Remote),
     ok = mod_inbox_backend:reset_unread(HostType, InboxEntryKey, undefined, TS).
 
--spec reset_unread_count(HostType ::mongooseim:host_type(),
+-spec reset_unread_count(HostType :: mongooseim:host_type(),
                          From :: jid:jid(),
                          Remote :: jid:jid(),
                          MsgId :: id(),
@@ -141,7 +141,7 @@ has_chat_marker(Packet) ->
 
 -spec maybe_write_to_inbox(HostType, User, Remote, Packet, Acc, WriteF) ->
     mod_inbox:count_res() when
-      HostType ::mongooseim:host_type(),
+      HostType :: mongooseim:host_type(),
       User :: jid:jid(),
       Remote :: jid:jid(),
       Packet :: exml:element(),

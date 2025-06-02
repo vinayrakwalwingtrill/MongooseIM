@@ -90,7 +90,7 @@ send_message(RoomJID, SenderJID, Children, ExtraAttrs) ->
     fold(M, [fun check_user/1, fun check_muc_domain/1, fun get_user_aff/1, fun do_send_message/1]).
 
 -spec delete_room(jid:jid(), jid:jid()) ->
-    {ok | not_allowed | room_not_found | not_room_member | muc_server_not_found , iolist()}.
+    {ok | not_allowed | room_not_found | not_room_member | muc_server_not_found, iolist()}.
 delete_room(RoomJID, UserJID) ->
     M = #{user => UserJID, room => RoomJID},
     fold(M, [fun check_user/1, fun check_muc_domain/1, fun get_user_aff/1,
@@ -391,7 +391,7 @@ make_room(JID, Options, AffUsers) when is_list(Options) ->
 make_room(JID, Options, AffUsers) when is_map(Options) ->
     #{jid => JID, aff_users => AffUsers, options => Options}.
 
-ensure_keys_are_binaries([{K, _}|_] = Conf) when is_binary(K) ->
+ensure_keys_are_binaries([{K, _} | _] = Conf) when is_binary(K) ->
     Conf;
 ensure_keys_are_binaries(Conf) ->
     [{atom_to_binary(K), V} || {K, V} <- Conf].

@@ -107,7 +107,7 @@ check_password(HostType, LUser, LServer, Password) ->
     Alg = binary_to_atom(jid:str_tolower(BinAlg), utf8),
     case jwerl:verify(Password, Alg, Key) of
         {ok, TokenData} ->
-            UserKey = mongoose_config:get_opt([{auth,HostType}, jwt, username_key]),
+            UserKey = mongoose_config:get_opt([{auth, HostType}, jwt, username_key]),
             case maps:find(UserKey, TokenData) of
                 {ok, LUser} ->
                     %% Login username matches $token_user_key in TokenData

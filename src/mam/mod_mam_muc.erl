@@ -341,7 +341,7 @@ handle_set_prefs_result({error, Reason},
 
 -spec handle_get_prefs(host_type(), jid:jid(), jlib:iq()) ->
                               jlib:iq() | {error, any(), jlib:iq()}.
-handle_get_prefs(HostType, ArcJID=#jid{}, IQ=#iq{}) ->
+handle_get_prefs(HostType, ArcJID = #jid{}, IQ = #iq{}) ->
     ArcID = archive_id_int(HostType, ArcJID),
     Res = get_prefs(HostType, ArcID, ArcJID, always),
     handle_get_prefs_result(ArcJID, Res, IQ).
@@ -472,7 +472,7 @@ archive_id_int(HostType, ArcJID = #jid{}) ->
     mongoose_hooks:mam_muc_archive_id(HostType, ArcJID).
 
 -spec archive_size(HostType :: host_type(), ArcID :: mod_mam:archive_id(),
-                   ArcJID ::jid:jid()) -> non_neg_integer().
+                   ArcJID :: jid:jid()) -> non_neg_integer().
 archive_size(HostType, ArcID, ArcJID = #jid{}) ->
     mongoose_hooks:mam_muc_archive_size(HostType, ArcID, ArcJID).
 
@@ -607,7 +607,10 @@ handle_error_iq(Acc, _HostType, _To, _Action, IQ) ->
 return_error_iq(IQ, {Reason, {stacktrace, _Stacktrace}}) ->
     return_error_iq(IQ, Reason);
 return_error_iq(IQ, timeout) ->
-    {error, timeout, IQ#iq{type = error, sub_el = [mongoose_xmpp_errors:service_unavailable(<<"en">>, <<"Timeout in mod_mam_muc">>)]}};
+    {error,
+     timeout,
+     IQ#iq{type = error,
+           sub_el = [mongoose_xmpp_errors:service_unavailable(<<"en">>, <<"Timeout in mod_mam_muc">>)]}};
 return_error_iq(IQ, invalid_stanza_id) ->
     Text = mongoose_xmpp_errors:not_acceptable(<<"en">>, <<"Invalid stanza ID provided">>),
     {error, invalid_stanza_id, IQ#iq{type = error, sub_el = [Text]}};
@@ -615,7 +618,10 @@ return_error_iq(IQ, item_not_found) ->
     Text = mongoose_xmpp_errors:item_not_found(<<"en">>, <<"Message with specified ID is not found">>),
     {error, item_not_found, IQ#iq{type = error, sub_el = [Text]}};
 return_error_iq(IQ, not_implemented) ->
-    {error, not_implemented, IQ#iq{type = error, sub_el = [mongoose_xmpp_errors:feature_not_implemented(<<"en">>, <<"From mod_mam_muc">>)]}};
+    {error,
+     not_implemented,
+     IQ#iq{type = error,
+           sub_el = [mongoose_xmpp_errors:feature_not_implemented(<<"en">>, <<"From mod_mam_muc">>)]}};
 return_error_iq(IQ, missing_with_jid) ->
     Error =  mongoose_xmpp_errors:bad_request(<<"en">>,
                                <<"Limited set of queries allowed in the conversation mode.",

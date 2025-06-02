@@ -220,16 +220,16 @@ calc_offset(Env, Filter, PageSize, TotalCount, RSM) ->
 
 -spec after_id(message_id(), filter()) -> filter().
 after_id(ID, Filter) ->
-    [{greater, id, ID}|Filter].
+    [{greater, id, ID} | Filter].
 
 -spec before_id(message_id(), filter()) -> filter().
 before_id(ID, Filter) ->
-    [{less, id, ID}|Filter].
+    [{less, id, ID} | Filter].
 
 -spec from_id(message_id(), filter()) -> filter().
 from_id(ID, Filter) ->
-    [{ge, id, ID}|Filter].
+    [{ge, id, ID} | Filter].
 
 -spec to_id(message_id(), filter()) -> filter().
 to_id(ID, Filter) ->
-    [{le, id, ID}|Filter].
+    [{le, id, ID} | Filter].

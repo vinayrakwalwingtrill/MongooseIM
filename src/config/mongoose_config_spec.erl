@@ -912,7 +912,7 @@ s2s_outgoing_dns() ->
 %% Check that all auth methods and modules enabled for any host type support dynamic domains
 process_dynamic_domains(Items) ->
     case proplists:lookup(host_types, Items) of
-        {_, [_|_] = HostTypes} ->
+        {_, [_ | _] = HostTypes} ->
             HTItems = lists:filter(fun(Item) -> is_host_type_item(Item, HostTypes) end, Items),
             case {unsupported_auth_methods(HTItems), unsupported_modules(HTItems)} of
                 {[], []} ->

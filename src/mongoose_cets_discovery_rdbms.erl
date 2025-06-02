@@ -170,7 +170,7 @@ timestamp() ->
 %% Returns a next free node id based on the currently registered ids
 first_free_num(Nums) ->
     %% 0 is default node_num, so lets start from 1
-    [FirstFreeNum | _] = lists:seq(1, length(Nums)+1) -- Nums,
+    [FirstFreeNum | _] = lists:seq(1, length(Nums) + 1) -- Nums,
     FirstFreeNum.
 
 -ifdef(TEST).

@@ -229,7 +229,7 @@ supported_features() -> [dynamic_domains].
 %%%
 
 %% FIXME there is no such option in config spec
--spec get_cache_option(mongooseim:host_type()) -> false | {true, CacheTime::integer()}.
+-spec get_cache_option(mongooseim:host_type()) -> false | {true, CacheTime :: integer()}.
 get_cache_option(HostType) ->
     case mongoose_config:lookup_opt({extauth_cache, HostType}) of
         {ok, CacheTime} -> {true, CacheTime};

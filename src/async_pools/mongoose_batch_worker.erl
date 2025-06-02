@@ -60,7 +60,7 @@ init(#{host_type := HostType,
 
 -spec handle_call(term(), {pid(), term()}, state()) -> {reply, term(), state()}.
 handle_call(sync, _From, State = #state{host_type = HostType, pool_id = PoolId,
-                                        flush_queue = [_|_]}) ->
+                                        flush_queue = [_ | _]}) ->
     mongoose_instrument:execute(async_pool_flush, #{host_type => HostType, pool_id => PoolId},
                                 #{timed => 1}),
     {reply, ok, run_flush(State)};

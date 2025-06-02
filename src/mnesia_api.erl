@@ -16,7 +16,7 @@
 -type load_error() :: cannot_load | bad_file_format | file_not_found.
 -type change_error() :: file_not_found | bad_file_format | cannot_change.
 
--spec mnesia_info(Keys::[binary()]) -> {ok, [info_result() | info_error()]}.
+-spec mnesia_info(Keys :: [binary()]) -> {ok, [info_result() | info_error()]}.
 mnesia_info(null) ->
     Value = mnesia:system_info(all),
     Result = lists:foldl(fun({Key, Result}, AllAcc) ->
@@ -67,8 +67,8 @@ backup_mnesia(Path) ->
 
 -spec restore_mnesia(file:name()) -> {restore_error(), io_lib:chars()} | {ok, []}.
 restore_mnesia(Path) ->
-    ErrorString=lists:flatten( io_lib:format("Can't restore backup from ~p at node ~p: ",
-                                             [filename:absname(Path), node()])),
+    ErrorString=lists:flatten(io_lib:format("Can't restore backup from ~p at node ~p: ",
+                                            [filename:absname(Path), node()])),
     case mnesia_api:restore(Path) of
         {atomic, _} ->
             {ok, ""};

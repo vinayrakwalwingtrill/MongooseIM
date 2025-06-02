@@ -79,7 +79,7 @@ all_members() ->
 force_check_for_updates() ->
     %% Send a broadcast message.
     case all_members() of
-        [_|_] = Pids ->
+        [_ | _] = Pids ->
             [Pid ! check_for_updates || Pid <- Pids],
             ok;
         _ ->

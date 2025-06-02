@@ -258,7 +258,7 @@ determine_amp_strategy(Strategy, _, _) ->
       Acc :: boolean(),
       Params :: #{packet := exml:element()},
       Extra :: gen_hook:extra().
-sm_filter_offline_message(_Drop=false, #{packet := Packet}, _) ->
+sm_filter_offline_message(_Drop = false, #{packet := Packet}, _) ->
     %% If ...
     {ok, mod_mam_utils:is_mam_result_message(Packet)};
     %% ... than drop the message
@@ -283,7 +283,7 @@ filter_unacknowledged_messages(Buffer, _, _) ->
 %% Internal functions
 
 -spec jid_to_host_type(jid:jid()) -> host_type().
-jid_to_host_type(#jid{lserver=LServer}) ->
+jid_to_host_type(#jid{lserver = LServer}) ->
     lserver_to_host_type(LServer).
 
 lserver_to_host_type(LServer) ->
@@ -337,7 +337,7 @@ handle_mam_iq(Action, From, To, IQ, Acc) ->
 
 -spec handle_set_prefs(jid:jid(), jlib:iq(), mongoose_acc:t()) ->
                               jlib:iq() | {error, term(), jlib:iq()}.
-handle_set_prefs(ArcJID=#jid{}, IQ=#iq{sub_el = PrefsEl}, Acc) ->
+handle_set_prefs(ArcJID = #jid{}, IQ = #iq{sub_el = PrefsEl}, Acc) ->
     {DefaultMode, AlwaysJIDs, NeverJIDs} = mod_mam_utils:parse_prefs(PrefsEl),
     ?LOG_DEBUG(#{what => mam_set_prefs, default_mode => DefaultMode,
                  always_jids => AlwaysJIDs, never_jids => NeverJIDs, iq => IQ}),
@@ -356,7 +356,7 @@ handle_set_prefs_result({error, Reason},
 
 -spec handle_get_prefs(jid:jid(), IQ :: jlib:iq(), Acc :: mongoose_acc:t()) ->
                               jlib:iq() | {error, term(), jlib:iq()}.
-handle_get_prefs(ArcJID=#jid{}, IQ=#iq{}, Acc) ->
+handle_get_prefs(ArcJID = #jid{}, IQ = #iq{}, Acc) ->
     HostType = acc_to_host_type(Acc),
     ArcID = archive_id_int(HostType, ArcJID),
     Res = get_prefs(HostType, ArcID, ArcJID, always),
@@ -394,7 +394,7 @@ handle_set_message_form(#jid{} = From, #jid{} = ArcJID, #iq{} = IQ, Acc) ->
                                  HostType :: mongooseim:host_type()) ->
     jlib:iq() | ignore | {error, term(), jlib:iq()}.
 do_handle_set_message_form(Params0, From, ArcID, ArcJID,
-                           #iq{xmlns=MamNs, sub_el = QueryEl} = IQ,
+                           #iq{xmlns = MamNs, sub_el = QueryEl} = IQ,
                            HostType) ->
     QueryID = exml_query:attr(QueryEl, <<"queryid">>, <<>>),
     Params = mam_iq:lookup_params_with_archive_details(Params0, ArcID, ArcJID, From),
@@ -431,8 +431,8 @@ forward_messages(HostType, From, ArcJID, MamNs, QueryID, MessageRows, SetClientN
     {FirstMessID, LastMessID} =
     case MessageRows of
         [] -> {undefined, undefined};
-        [_|_] -> {message_row_to_ext_id(hd(MessageRows)),
-                  message_row_to_ext_id(lists:last(MessageRows))}
+        [_ | _] -> {message_row_to_ext_id(hd(MessageRows)),
+                    message_row_to_ext_id(lists:last(MessageRows))}
     end,
     SendModule = mod_mam_params:send_message_mod(?MODULE, HostType),
     [send_message(SendModule, Row, ArcJID, From,
@@ -445,13 +445,13 @@ send_message(SendModule, Row, ArcJID, From, Packet) ->
 
 -spec handle_get_message_form(jid:jid(), jid:jid(), jlib:iq(), mongoose_acc:t()) ->
                                      jlib:iq().
-handle_get_message_form(_From=#jid{}, _ArcJID=#jid{}, IQ=#iq{}, Acc) ->
+handle_get_message_form(_From = #jid{}, _ArcJID = #jid{}, IQ = #iq{}, Acc) ->
     HostType = acc_to_host_type(Acc),
     return_message_form_iq(HostType, IQ).
 
 -spec handle_get_metadata(jid:jid(), jlib:iq(), mongoose_acc:t()) ->
                                  jlib:iq() | {error, term(), jlib:iq()}.
-handle_get_metadata(ArcJID=#jid{}, IQ=#iq{}, Acc) ->
+handle_get_metadata(ArcJID = #jid{}, IQ = #iq{}, Acc) ->
     HostType = acc_to_host_type(Acc),
     ArcID = archive_id_int(HostType, ArcJID),
     case mod_mam_utils:lookup_first_and_last_messages(HostType, ArcID, ArcJID,
@@ -563,16 +563,16 @@ is_interesting(HostType, LocJID, RemJID, ArcID) ->
 
 -spec archive_id_int(host_type(), jid:jid()) ->
                             non_neg_integer() | undefined.
-archive_id_int(HostType, ArcJID=#jid{}) ->
+archive_id_int(HostType, ArcJID = #jid{}) ->
     mongoose_hooks:mam_archive_id(HostType, ArcJID).
 
 -spec archive_size(host_type(), mod_mam:archive_id(), jid:jid()) -> integer().
-archive_size(HostType, ArcID, ArcJID=#jid{}) ->
+archive_size(HostType, ArcID, ArcJID = #jid{}) ->
     mongoose_hooks:mam_archive_size(HostType, ArcID, ArcJID).
 
 -spec get_behaviour(host_type(), mod_mam:archive_id(), LocJID :: jid:jid(),
                     RemJID :: jid:jid()) -> atom().
-get_behaviour(HostType, ArcID,  LocJID=#jid{}, RemJID=#jid{}) ->
+get_behaviour(HostType, ArcID,  LocJID = #jid{}, RemJID = #jid{}) ->
   mongoose_hooks:mam_get_behaviour(HostType, ArcID, LocJID, RemJID).
 
 -spec set_prefs(host_type(), mod_mam:archive_id(), ArcJID :: jid:jid(),
@@ -596,7 +596,7 @@ get_prefs(HostType, ArcID, ArcJID, GlobalDefaultMode) ->
     Result.
 
 -spec remove_archive_hook(host_type(), mod_mam:archive_id(), jid:jid()) -> ok.
-remove_archive_hook(HostType, ArcID, ArcJID=#jid{}) ->
+remove_archive_hook(HostType, ArcID, ArcJID = #jid{}) ->
     mongoose_hooks:mam_remove_archive(HostType, ArcID, ArcJID),
     mongoose_instrument:execute(mod_mam_pm_remove_archive, #{host_type => HostType},
                                 #{jid => ArcJID, count => 1}).
@@ -723,7 +723,7 @@ report_issue(not_implemented, _Stacktrace, _Issue, _ArcJID, _IQ) ->
     expected;
 report_issue(timeout, _Stacktrace, _Issue, _ArcJID, _IQ) ->
     expected;
-report_issue(Reason, Stacktrace, Issue, #jid{lserver=LServer, luser=LUser}, IQ) ->
+report_issue(Reason, Stacktrace, Issue, #jid{lserver = LServer, luser = LUser}, IQ) ->
     ?LOG_ERROR(#{what => mam_error,
                  issue => Issue, server => LServer, user => LUser,
                  reason => Reason, iq => IQ, stacktrace => Stacktrace}).

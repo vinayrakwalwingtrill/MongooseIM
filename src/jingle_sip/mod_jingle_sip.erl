@@ -236,7 +236,7 @@ translate_to_sip(<<"session-initiate">>, Jingle, Acc) ->
     SDP = prepare_initial_sdp(LServer, Jingle),
     ProxyURI = get_proxy_uri(LServer),
     RequestURI = list_to_binary(["sip:", ToUser, "@", ProxyURI]),
-    ToHeader = <<ToUser/binary, " <sip:",To/binary, ">">>,
+    ToHeader = <<ToUser/binary, " <sip:", To/binary, ">">>,
     LocalHost = gen_mod:get_module_opt(LServer, ?MODULE, local_host),
 
     {async, Handle} = nksip_uac_invite(?SERVICE, RequestURI,

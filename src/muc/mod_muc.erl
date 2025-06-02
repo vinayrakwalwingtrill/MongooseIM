@@ -520,7 +520,7 @@ handle_call({create_instant, ServerHost, MucHost, Room, From, Nick, Opts},
                                            MucHost, ServerHost, Access,
                                            Room, HistorySize,
                                            RoomShaper, HttpAuthPool, From,
-                                           Nick, [{instant, true}|NewOpts]),
+                                           Nick, [{instant, true} | NewOpts]),
         register_room_or_stop_if_duplicate(HostType, MucHost, Room, Pid),
         {reply, ok, State}
     catch Class:Reason:Stacktrace ->
@@ -655,7 +655,8 @@ route_to_online_room(Pid, {From, To, Acc, Packet}) ->
     {_, _, Nick} = jid:to_lower(To),
     ok = mod_muc_room:route(Pid, From, Nick, Acc, Packet).
 
--spec get_registered_room_or_route_error(muc_host(), room(), from_to_packet(), state()) -> {ok, pid()} | {route_error, binary()}.
+-spec get_registered_room_or_route_error(muc_host(), room(), from_to_packet(), state()) ->
+    {ok, pid()} | {route_error, binary()}.
 get_registered_room_or_route_error(MucHost, Room, {From, To, Acc, Packet}, State) ->
     case {Packet#xmlel.name, exml_query:attr(Packet, <<"type">>, <<>>)} of
         {<<"presence">>, <<>>} ->
@@ -964,7 +965,7 @@ record_to_simple(#muc_room{name_host = Room, opts = Opts}) ->
     {Room, Opts}.
 
 -spec get_vh_rooms(muc_host(), jlib:rsm_in()) -> {list(), jlib:rsm_out()}.
-get_vh_rooms(MucHost, #rsm_in{max=Max, direction=Direction, id=I, index=Index}) ->
+get_vh_rooms(MucHost, #rsm_in{max = Max, direction = Direction, id = I, index = Index}) ->
     NonUndefMax = case Max of
         undefined -> 134217728;
         _ -> Max
@@ -982,7 +983,7 @@ get_vh_rooms(MucHost, #rsm_in{max=Max, direction=Direction, id=I, index=Index}) 
                     BareSortedRooms),
                 1,
                 NonUndefMax);
-        {undefined,before} when I == <<>> ->
+        {undefined, before} when I == <<>> ->
             lists:reverse(
                 lists:sublist(
                     lists:reverse(BareSortedRooms), 1, NonUndefMax));
@@ -1004,14 +1005,14 @@ get_vh_rooms(MucHost, #rsm_in{max=Max, direction=Direction, id=I, index=Index}) 
          end,
     case L2 of
         [] ->
-            {L2, #rsm_out{count=Count}};
+            {L2, #rsm_out{count = Count}};
         _ ->
             H = hd(L2),
             NewIndex = get_room_pos(H, BareSortedRooms),
 
-            {{F, _},_} = H,
+            {{F, _}, _} = H,
             {{Last, _}, _} = lists:last(L2),
-            {L2, #rsm_out{first=F, last=Last, count=Count, index=NewIndex}}
+            {L2, #rsm_out{first = F, last = Last, count = Count, index = NewIndex}}
     end.
 
 %% @doc Return the position of desired room in the list of rooms.

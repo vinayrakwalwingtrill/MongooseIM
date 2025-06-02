@@ -55,17 +55,17 @@ validate(V, _, {enum, Values}) -> validate_enum(V, Values);
 validate(_V, _, any) -> ok.
 
 -spec validate_list([mongoose_config_parser_toml:config_part()], list_validator()) -> any().
-validate_list([_|_], non_empty) -> ok;
-validate_list(L = [_|_], unique_non_empty) -> validate_unique_items(L);
+validate_list([_ | _], non_empty) -> ok;
+validate_list(L = [_ | _], unique_non_empty) -> validate_unique_items(L);
 validate_list(L, unique) -> validate_unique_items(L);
 validate_list(L, any) when is_list(L) -> ok.
 
 -spec validate_section([mongoose_config_parser_toml:config_part()], section_validator()) -> any().
-validate_section([_|_], non_empty) -> ok;
+validate_section([_ | _], non_empty) -> ok;
 validate_section(L, any) when is_list(L) -> ok.
 
 %% validators
-%% 
+%%
 validate_instrumentation_loglevel(none) ->
     error(#{what => validate_instrumentation_loglevel_failed,
             value => none});
@@ -188,7 +188,7 @@ validate_ip_mask_string(IPMaskString) ->
 validate_ip_mask({IP, Mask}) ->
     validate_string(inet:ntoa(IP)),
     case IP of
-        {_,_,_,_} ->
+        {_, _, _, _} ->
             validate_ipv4_mask(Mask);
         _ ->
             validate_ipv6_mask(Mask)

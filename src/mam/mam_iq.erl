@@ -91,15 +91,15 @@ action_type(mam_get_metadata) -> get.
 -spec fix_rsm('none' | jlib:rsm_in()) -> 'undefined' | jlib:rsm_in().
 fix_rsm(none) ->
     undefined;
-fix_rsm(RSM=#rsm_in{direction = aft, id = <<>>}) ->
+fix_rsm(RSM = #rsm_in{direction = aft, id = <<>>}) ->
     RSM#rsm_in{direction = undefined, id = undefined}; %% First page
-fix_rsm(RSM=#rsm_in{direction = aft, id = undefined}) ->
+fix_rsm(RSM = #rsm_in{direction = aft, id = undefined}) ->
     RSM#rsm_in{direction = undefined}; %% First page
-fix_rsm(RSM=#rsm_in{id = undefined}) ->
+fix_rsm(RSM = #rsm_in{id = undefined}) ->
     RSM;
-fix_rsm(RSM=#rsm_in{id = <<>>}) ->
+fix_rsm(RSM = #rsm_in{id = <<>>}) ->
     RSM#rsm_in{id = undefined};
-fix_rsm(RSM=#rsm_in{id = BExtMessID}) when is_binary(BExtMessID) ->
+fix_rsm(RSM = #rsm_in{id = BExtMessID}) when is_binary(BExtMessID) ->
     MessID = mod_mam_utils:external_binary_to_mess_id(BExtMessID),
     RSM#rsm_in{id = MessID}.
 

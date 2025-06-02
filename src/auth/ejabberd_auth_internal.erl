@@ -213,7 +213,7 @@ get_registered_users(_, LServer, Opts) ->
                ) -> [jid:simple_bare_jid()].
 get_users(LServer, [{from, Start}, {to, End}])
         when is_integer(Start) and is_integer(End) ->
-    get_users(LServer, [{limit, End-Start+1}, {offset, Start}]);
+    get_users(LServer, [{limit, End - Start + 1}, {offset, Start}]);
 get_users(LServer, [{limit, Limit}, {offset, Offset}])
         when is_integer(Limit) and is_integer(Offset) ->
     get_users_within_interval(get_users(LServer), Limit, Offset);
@@ -223,7 +223,7 @@ get_users(LServer, [{prefix, Prefix}])
     lists:keysort(1, Users);
 get_users(LServer, [{prefix, Prefix}, {from, Start}, {to, End}])
         when is_binary(Prefix) and is_integer(Start) and is_integer(End) ->
-    get_users(LServer, [{prefix, Prefix}, {limit, End-Start+1}, {offset, Start}]);
+    get_users(LServer, [{prefix, Prefix}, {limit, End - Start + 1}, {offset, Start}]);
 get_users(LServer, [{prefix, Prefix}, {limit, Limit}, {offset, Offset}])
         when is_binary(Prefix) and is_integer(Limit) and is_integer(Offset) ->
     Users = matching_users(Prefix, get_users(LServer)),
@@ -265,7 +265,7 @@ get_password(_, LUser, LServer) ->
     case catch dirty_read_passwd(US) of
         [#passwd{password = Scram}] when is_record(Scram, scram) ->
             mongoose_scram:scram_record_to_map(Scram);
-        [#passwd{password = Params}] when is_map(Params)->
+        [#passwd{password = Params}] when is_map(Params) ->
             Params;
         [#passwd{password = Password}] ->
             Password;
@@ -279,7 +279,7 @@ get_password_s(_HostType, LUser, LServer) ->
     case catch dirty_read_passwd(US) of
         [#passwd{password = Scram}] when is_record(Scram, scram) ->
             <<"">>;
-        [#passwd{password = Params}] when is_map(Params)->
+        [#passwd{password = Params}] when is_map(Params) ->
             <<"">>;
         [#passwd{password = Password}] ->
             Password;

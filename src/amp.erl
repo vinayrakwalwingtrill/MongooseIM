@@ -73,7 +73,7 @@ make_response(Rule, User, Packet) ->
 
 -spec make_error_response([amp_error()], [amp_any_rule()], jid:jid(), #xmlel{})
                          -> #xmlel{}.
-make_error_response([E|_] = Errors, [_|_] = Rules, User, Packet) ->
+make_error_response([E | _] = Errors, [_ | _] = Rules, User, Packet) ->
     OriginalId = exml_query:attr(Packet, <<"id">>, <<"original-id-missing">>),
     Error = make_error_el(Errors, Rules),
     Amp = #xmlel{name = <<"amp">>,

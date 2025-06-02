@@ -57,7 +57,9 @@
 %% API
 %%====================================================================
 
--spec change_aff_users(HostType :: mongooseim:host_type(), CurrentAffUsers :: aff_users(), AffUsersChangesAssorted :: aff_users()) ->
+-spec change_aff_users(HostType :: mongooseim:host_type(),
+                       CurrentAffUsers :: aff_users(),
+                       AffUsersChangesAssorted :: aff_users()) ->
     change_aff_success() | {error, bad_request()}.
 change_aff_users(HostType, AffUsers, AffUsersChangesAssorted) ->
     case {lists:keyfind(owner, 2, AffUsers), lists:keyfind(owner, 2, AffUsersChangesAssorted)} of
@@ -158,9 +160,9 @@ filter_out_loop(_HostType, _FromUS, _MUCServer, _BlockingQuery, _RoomsPerUser, [
 %% ---------------- Affiliations manipulation ----------------
 
 -spec change_aff_functions(AllowMultipleOwners :: boolean()) -> [fun(), ...].
-change_aff_functions(_AllowMultipleOwners = false)->
+change_aff_functions(_AllowMultipleOwners = false) ->
     [fun maybe_demote_old_owner/1, fun maybe_select_new_owner/1];
-change_aff_functions(_AllowMultipleOwners = true)->
+change_aff_functions(_AllowMultipleOwners = true) ->
     [fun maybe_select_new_owner/1].
 
 -spec maybe_select_new_owner(ChangeResult :: change_aff_success() | {error, bad_request()}) ->

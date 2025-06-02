@@ -90,7 +90,7 @@ all_to_binary(Full, FConfig) when is_binary(Full) ->
     FullUnicode = unicode:characters_to_binary(Short, utf8, utf8),
     case {ShortUnicode, FullUnicode} of
         {<<_/binary>>, <<_/binary>>} -> ShortUnicode;
-        {{incomplete,Incomplete,_}, <<_/binary>>} -> Incomplete;
+        {{incomplete, Incomplete, _}, <<_/binary>>} -> Incomplete;
         _ -> format_non_unicode(Full, FConfig)
     end;
 all_to_binary(Something, FConfig) ->

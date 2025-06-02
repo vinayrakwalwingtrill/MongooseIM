@@ -89,7 +89,7 @@
 -callback remove_domain(HostType :: mongooseim:host_type(), Server :: jid:lserver()) ->
     ok | {error, term()}.
 
--callback supported_features() -> [Feature::atom()].
+-callback supported_features() -> [Feature :: atom()].
 
 -callback instrumentation(mongooseim:host_type()) -> [mongoose_instrument:spec()].
 

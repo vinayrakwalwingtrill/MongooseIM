@@ -62,7 +62,7 @@ filter_keys(Dict, Keys) ->
     [KV || KV = {Key, _} <- Dict, lists:member(Key, Keys)].
 
 prepare_nodes_arg([]) ->
-    [node()|nodes()];
+    [node() | nodes()];
 prepare_nodes_arg(Nodes) ->
     Nodes.
 

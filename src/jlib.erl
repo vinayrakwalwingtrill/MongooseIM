@@ -268,7 +268,7 @@ iq_info_internal(#xmlel{name = Name, children = Els} = Element, Filter) when Nam
 iq_info_internal(_, _) ->
     not_iq.
 
--spec iq_type_to_binary(set|get|result|error) -> invalid | binary().
+-spec iq_type_to_binary(set | get | result | error) -> invalid | binary().
 iq_type_to_binary(set) -> <<"set">>;
 iq_type_to_binary(get) -> <<"get">>;
 iq_type_to_binary(result) -> <<"result">>;
@@ -294,7 +294,7 @@ sub_el_to_els(#xmlel{}=E) -> [E];
 sub_el_to_els(Es) when is_list(Es) -> Es.
 
 -spec rsm_decode(exml:element() | iq()) -> none | #rsm_in{}.
-rsm_decode(#iq{sub_el = SubEl})->
+rsm_decode(#iq{sub_el = SubEl}) ->
     rsm_decode(SubEl);
 rsm_decode(#xmlel{} = SubEl) ->
     case exml_query:subelement(SubEl, <<"set">>) of
@@ -319,7 +319,7 @@ rsm_parse_element(#xmlel{name = <<"index">>, attrs = Attrs} = Elem, RsmIn) when 
     IndexStr = exml_query:cdata(Elem),
     {Index, _} = string:to_integer(binary_to_list(IndexStr)),
     RsmIn#rsm_in{index = Index};
-rsm_parse_element(_, RsmIn)->
+rsm_parse_element(_, RsmIn) ->
     RsmIn.
 
 -spec rsm_encode(none | rsm_out()) -> [exml:element()].
@@ -330,21 +330,21 @@ rsm_encode(RsmOut) ->
             children = lists:reverse(rsm_encode_out(RsmOut))}].
 
 -spec rsm_encode_out(rsm_out()) -> [exml:element()].
-rsm_encode_out(#rsm_out{count = Count, index = Index, first = First, last = Last})->
+rsm_encode_out(#rsm_out{count = Count, index = Index, first = First, last = Last}) ->
     El = rsm_encode_first(First, Index, []),
     El2 = rsm_encode_last(Last, El),
     rsm_encode_count(Count, El2).
 
 -spec rsm_encode_first(First :: undefined | binary(),
                        Index :: 'undefined' | integer(),
-                       Arr::[exml:element()]) -> [exml:element()].
+                       Arr :: [exml:element()]) -> [exml:element()].
 rsm_encode_first(undefined, undefined, Arr) ->
     Arr;
 rsm_encode_first(First, undefined, Arr) ->
     [#xmlel{name = <<"first">>, children = [#xmlcdata{content = First}]} | Arr];
 rsm_encode_first(First, Index, Arr) ->
     [#xmlel{name = <<"first">>, attrs = #{<<"index">> => i2b(Index)},
-            children = [#xmlcdata{content = First}]}|Arr].
+            children = [#xmlcdata{content = First}]} | Arr].
 
 -spec rsm_encode_last(Last :: 'undefined', Arr :: [exml:element()]) -> [exml:element()].
 rsm_encode_last(undefined, Arr) -> Arr;
@@ -378,7 +378,7 @@ timestamp_to_xml(TimestampString, FromJID, Desc) ->
                          <<"stamp">> => list_to_binary(TimestampString)},
            children = Text}.
 
--spec stanza_error( Code :: binary()
+-spec stanza_error(Code :: binary()
    , Type :: binary()
    , Condition :: binary()
    , SpecTag :: binary()
@@ -391,7 +391,7 @@ stanza_error(Code, Type, Condition, SpecTag, SpecNs) ->
 
 %% TODO: remove `code' attribute (currently it used for backward-compatibility)
 
--spec stanza_error( Code :: binary()
+-spec stanza_error(Code :: binary()
                  , Type :: binary()
                  , Condition :: binary() | undefined) -> exml:element().
 stanza_error(Code, Type, Condition) ->
@@ -402,7 +402,7 @@ stanza_error(Code, Type, Condition) ->
                              }]
         }.
 
--spec stanza_errort( Code :: binary()
+-spec stanza_errort(Code :: binary()
                   , Type :: binary()
                   , Condition :: binary()
                   , Lang :: ejabberd:lang()
@@ -429,7 +429,7 @@ stream_error(Condition) ->
                      ]
         }.
 
--spec stream_errort( Condition :: binary()
+-spec stream_errort(Condition :: binary()
                   , Lang :: ejabberd:lang()
                   , Text :: binary()) -> exml:element().
 stream_errort(Condition, Lang, Text) ->

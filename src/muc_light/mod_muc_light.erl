@@ -310,7 +310,7 @@ hooks(HostType) ->
 %% Routing
 %%====================================================================
 
--spec process_packet(Acc :: mongoose_acc:t(), From ::jid:jid(), To ::jid:jid(),
+-spec process_packet(Acc :: mongoose_acc:t(), From :: jid:jid(), To :: jid:jid(),
                      El :: exml:element(), Extra :: gen_hook:extra()) -> mongoose_acc:t().
 process_packet(Acc, From, To, El, _Extra) ->
     HostType = mod_muc_light_utils:acc_to_host_type(Acc),
@@ -681,7 +681,7 @@ process_create_aff_users(HostType, Creator, AffUsers, EqualOccupants) ->
 creator_aff(true) -> member;
 creator_aff(false) -> owner.
 
--spec handle_disco_info_get(From ::jid:jid(),
+-spec handle_disco_info_get(From :: jid:jid(),
                             To :: jid:jid(),
                             DiscoInfo :: disco_info_req_props(),
                             Acc :: mongoose_acc:t()) ->
@@ -692,7 +692,7 @@ handle_disco_info_get(From, To, DiscoInfo, Acc) ->
 
 -spec handle_disco_items_get(HostType :: host_type(),
                              Acc :: mongoose_acc:t(),
-                             From ::jid:jid(), To ::jid:jid(),
+                             From :: jid:jid(), To :: jid:jid(),
                              DiscoItems :: disco_items_req_props(),
                              OrigPacket :: exml:element()) ->
     mongoose_acc:t().

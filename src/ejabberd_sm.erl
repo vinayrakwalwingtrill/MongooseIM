@@ -422,7 +422,7 @@ node_cleanup(Acc, #{node := Node}, _) ->
     Res = gen_server:call(?MODULE, {node_cleanup, Node}, Timeout),
     {ok, maps:put(?MODULE, Res, Acc)}.
 
--spec check_in_subscription(Acc, Args, Extra)-> {ok, Acc} | {stop, false} when
+-spec check_in_subscription(Acc, Args, Extra) -> {ok, Acc} | {stop, false} when
       Acc :: any(),
       Args :: #{to := jid:jid()},
       Extra :: map().
@@ -964,7 +964,8 @@ process_iq(#iq{xmlns = XMLNS} = IQ, From, To, Acc, Packet) ->
         [{_, IQHandler}] ->
             gen_iq_component:handle(IQHandler, Acc, From, To, IQ);
         [] ->
-            E = mongoose_xmpp_errors:service_unavailable(<<"en">>, <<"Unknown xmlns=", XMLNS/binary, " for host=", Host/binary>>),
+            E = mongoose_xmpp_errors:service_unavailable(<<"en">>, <<"Unknown xmlns=", XMLNS/binary,
+                                                                     " for host=", Host/binary>>),
             {Acc1, Err} = jlib:make_error_reply(Acc, Packet, E),
             ejabberd_router:route(To, From, Acc1, Err)
     end;

@@ -643,7 +643,7 @@ should_be_stored_in_inbox(Acc, From, To, Msg, Dir, Type) ->
 
 -spec inbox_owner_exists(mongoose_acc:t(),
                          From :: jid:jid(),
-                         To ::jid:jid(),
+                         To :: jid:jid(),
                          mod_mam_utils:direction(),
                          message_type()) -> boolean().
 inbox_owner_exists(Acc, _, To, incoming, MessageType) -> % filter_local_packet

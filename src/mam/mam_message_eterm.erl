@@ -8,7 +8,7 @@
 -include_lib("exml/include/exml.hrl").
 
 -type old_xmlcdata_format() :: {xmlcdata, Content :: binary()}.
--type old_xmlel_format() :: {xmlel, Name :: binary(), Attrs :: [{binary(),binary()}],
+-type old_xmlel_format() :: {xmlel, Name :: binary(), Attrs :: [{binary(), binary()}],
                              Children :: [old_xmlel_format() | old_xmlcdata_format()]}.
 encode(Packet) ->
     term_to_binary(Packet).

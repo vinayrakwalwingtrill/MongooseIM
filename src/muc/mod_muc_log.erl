@@ -641,7 +641,7 @@ make_dir_rec(Dir) ->
             ok;
         {error, enoent} ->
             DirS = filename:split(Dir),
-            DirR = lists:sublist(DirS, length(DirS)-1),
+            DirR = lists:sublist(DirS, length(DirS) - 1),
             make_dir_rec(filename:join(DirR)),
             file:make_dir(Dir)
     end.
@@ -855,7 +855,7 @@ put_header(F, Room, Date, CSSFile, Lang, HourOffset, DatePrev, DateNext, TopLink
     Occupants = maps:get(Room#room.jid, OccupantsMap, []),
     RoomOccupants = roomoccupants_to_binary(Occupants, FileFormat),
     put_room_occupants(F, RoomOccupants, Lang, FileFormat),
-    TimeOffsetBin = case HourOffset<0 of
+    TimeOffsetBin = case HourOffset < 0 of
                           true -> list_to_binary(lists:flatten(io_lib:format("~p", [HourOffset])));
                           false -> list_to_binary(lists:flatten(io_lib:format("+~p", [HourOffset])))
         end,

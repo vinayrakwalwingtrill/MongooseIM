@@ -166,7 +166,7 @@ check_password_hash(JID, PasswordHash, HashMethod) ->
             {wrong_method, Msg};
         {_, PasswordHash} ->
             {ok, "Password hash is correct"};
-        _->
+        _ ->
             {incorrect, "Password hash is incorrect"}
     end.
 

@@ -150,7 +150,7 @@ run_tasks_in_parallel(RunTaskF, AllTasks) ->
     [check_result(Res) || Res <- Results],
     ok.
 
-run_upsert(HostType, 1, QueryName, InsertParams = [S, U|_], UpdateParams) ->
+run_upsert(HostType, 1, QueryName, InsertParams = [S, U | _], UpdateParams) ->
     {updated, _} = rdbms_queries:execute_upsert(HostType, QueryName,
                                  InsertParams, UpdateParams, [S, U]);
 run_upsert(HostType, _Count, QueryName, InsertParams, UpdateParams) ->

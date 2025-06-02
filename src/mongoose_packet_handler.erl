@@ -42,8 +42,8 @@ new(Module, Extra) when is_atom(Module), is_map(Extra) ->
 
 -spec process(Handler :: t(),
               Acc :: mongoose_acc:t(),
-              From ::jid:jid(),
-              To ::jid:jid(),
+              From :: jid:jid(),
+              To :: jid:jid(),
               El :: exml:element()) -> mongoose_acc:t().
 process(#packet_handler{handler = ProcessPacket, extra = Extra }, Acc, From, To, El) ->
     ProcessPacket(Acc, From, To, El, Extra).

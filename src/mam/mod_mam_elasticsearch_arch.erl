@@ -152,7 +152,7 @@ do_lookup_messages(_Result, Host, Params) ->
     Acc :: integer(),
     Params :: #{archive_id := mod_mam:archive_id() | undefined, owner := jid:jid()},
     Extra :: gen_hook:extra().
-archive_size(_Size, #{owner := OwnerJid}, _Extra)->
+archive_size(_Size, #{owner := OwnerJid}, _Extra) ->
     SearchQuery = build_search_query(#{owner_jid => OwnerJid}),
     {ok, archive_size(SearchQuery)}.
 

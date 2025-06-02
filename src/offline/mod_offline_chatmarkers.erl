@@ -60,7 +60,7 @@ supported_features() ->
     [dynamic_domains].
 
 -spec deps(mongooseim:host_type(), gen_mod:module_opts()) -> gen_mod_deps:deps().
-deps(_, _)->
+deps(_, _) ->
     [].  %% TODO: this need to be marked as required-to-be-configured
     % [{mod_smart_markers, [], hard}].
 

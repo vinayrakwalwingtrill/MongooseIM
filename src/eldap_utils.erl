@@ -121,8 +121,8 @@ get_ldap_attr(LDAPAttr, Attributes) ->
 get_user_part(String, Pattern) ->
     F = fun(S, P) ->
         {First, _} = binary:match(P, <<"%u">>),
-                TailLength = byte_size(P) - (First+1),
-        binary:part(S, First, byte_size(S)-TailLength-First+1)
+                TailLength = byte_size(P) - (First + 1),
+        binary:part(S, First, byte_size(S) - TailLength - First + 1)
         end,
     case catch F(String, Pattern) of
             {'EXIT', _} ->
@@ -144,19 +144,19 @@ get_user_part(String, Pattern) ->
 
 -spec generate_substring_list(binary())
       -> [{'any', binary()} | {'final', binary()} | {'initial', binary()}].
-generate_substring_list(Value)->
+generate_substring_list(Value) ->
     Splits = binary:split(Value, <<"*">>, [global]),
     {Acc, S}=case Splits of
-        [<<"">>|T]->{[], maybe_b2list(T)};
-        [H|T]-> {[{initial, maybe_b2list(H)}], T}
+        [<<"">> | T] -> {[], maybe_b2list(T)};
+        [H | T] -> {[{initial, maybe_b2list(H)}], T}
     end,
     lists:reverse(generate_substring_list(S, Acc)).
-generate_substring_list([<<"">>], Acc)->
+generate_substring_list([<<"">>], Acc) ->
     Acc;
-generate_substring_list([Last], Acc)->
-    [{final, Last}|Acc];
-generate_substring_list([H|T], Acc)->
-    generate_substring_list(T, [{any, H}|Acc]).
+generate_substring_list([Last], Acc) ->
+    [{final, Last} | Acc];
+generate_substring_list([H | T], Acc) ->
+    generate_substring_list(T, [{any, H} | Acc]).
 
 
 -spec make_filter([{binary(), [binary()]}], [{binary(), binary()}]) -> any().
@@ -289,7 +289,7 @@ decode_restricted_string(Tlv, Range, TagsIn) ->
     Val = match_tags(Tlv, TagsIn),
     Val2 =
         case Val of
-            PartList = [_H|_T] -> % constructed val
+            PartList = [_H | _T] -> % constructed val
                 collect_parts(PartList);
             Bin ->
                 Bin
@@ -311,7 +311,7 @@ check_and_convert_restricted_string(Val, Range) ->
             NewVal;
         {{Lb, _Ub}, []} when StrLen >= Lb ->
             NewVal;
-        {{Lb, _Ub}, _Ext=[Min|_]} when StrLen >= Lb; StrLen >= Min ->
+        {{Lb, _Ub}, _Ext=[Min | _]} when StrLen >= Lb; StrLen >= Min ->
             NewVal;
         {{Lb1, Ub1}, {Lb2, Ub2}} when StrLen >= Lb1, StrLen =< Ub1;
                                    StrLen =< Ub2, StrLen >= Lb2 ->
@@ -331,15 +331,15 @@ check_and_convert_restricted_string(Val, Range) ->
 %%----------------------------------------
 match_tags({T, V}, [T]) ->
     V;
-match_tags({T, V}, [T|Tt]) ->
+match_tags({T, V}, [T | Tt]) ->
     match_tags(V, Tt);
-match_tags([{T, V}], [T|Tt]) ->
+match_tags([{T, V}], [T | Tt]) ->
     match_tags(V, Tt);
-match_tags(Vlist = [{T, _V}|_], [T]) ->
+match_tags(Vlist = [{T, _V} | _], [T]) ->
     Vlist;
 match_tags(Tlv, []) ->
     Tlv;
-match_tags({Tag, _V}, [T|_Tt]) ->
+match_tags({Tag, _V}, [T | _Tt]) ->
     {error, {asn1, {wrong_tag, {Tag, T}}}}.
 
 
@@ -349,21 +349,21 @@ collect_parts(TlvList) ->
 
 
 -spec collect_parts([{_, _}], [any()]) -> binary().
-collect_parts([{_, L}|Rest], Acc) when is_list(L) ->
-    collect_parts(Rest, [collect_parts(L)|Acc]);
-collect_parts([{?N_BIT_STRING, <<Unused, Bits/binary>>}|Rest], _Acc) ->
+collect_parts([{_, L} | Rest], Acc) when is_list(L) ->
+    collect_parts(Rest, [collect_parts(L) | Acc]);
+collect_parts([{?N_BIT_STRING, <<Unused, Bits/binary>>} | Rest], _Acc) ->
     collect_parts_bit(Rest, [Bits], Unused);
-collect_parts([{_T, V}|Rest], Acc) ->
-    collect_parts(Rest, [V|Acc]);
+collect_parts([{_T, V} | Rest], Acc) ->
+    collect_parts(Rest, [V | Acc]);
 collect_parts([], Acc) ->
     list_to_binary(lists:reverse(Acc)).
 
 
 -spec collect_parts_bit([{3, binary()}], [binary(), ...], non_neg_integer()) -> binary().
-collect_parts_bit([{?N_BIT_STRING, <<Unused, Bits/binary>>}|Rest], Acc, Uacc) ->
-    collect_parts_bit(Rest, [Bits|Acc], Unused+Uacc);
+collect_parts_bit([{?N_BIT_STRING, <<Unused, Bits/binary>>} | Rest], Acc, Uacc) ->
+    collect_parts_bit(Rest, [Bits | Acc], Unused + Uacc);
 collect_parts_bit([], Acc, Uacc) ->
-    maybe_list2b([Uacc|lists:reverse(Acc)]).
+    maybe_list2b([Uacc | lists:reverse(Acc)]).
 
 maybe_b2list(B) when is_binary(B) ->
   binary_to_list(B);

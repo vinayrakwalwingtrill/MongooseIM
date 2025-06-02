@@ -211,18 +211,18 @@ prefs_to_rows(UserID, DefaultMode, AlwaysJIDs, NeverJIDs) ->
     NeverRows  = [[UserID, JID, encode_behaviour(never)] || JID <- NeverJIDs],
     DefaultRow = [UserID, <<>>, encode_behaviour(DefaultMode)],
     %% Lock keys in the same order to avoid deadlock
-    [DefaultRow|lists:sort(AlwaysRows ++ NeverRows)].
+    [DefaultRow | lists:sort(AlwaysRows ++ NeverRows)].
 
 -spec decode_prefs_rows([{binary() | jid:jid(), binary()}],
         DefaultMode :: mod_mam:archive_behaviour(),
         AlwaysJIDs :: [jid:literal_jid()],
         NeverJIDs :: [jid:literal_jid()]) ->
     {mod_mam:archive_behaviour(), [jid:literal_jid()], [jid:literal_jid()]}.
-decode_prefs_rows([{<<>>, Behaviour}|Rows], _DefaultMode, AlwaysJIDs, NeverJIDs) ->
+decode_prefs_rows([{<<>>, Behaviour} | Rows], _DefaultMode, AlwaysJIDs, NeverJIDs) ->
     decode_prefs_rows(Rows, decode_behaviour(Behaviour), AlwaysJIDs, NeverJIDs);
-decode_prefs_rows([{JID, <<"A">>}|Rows], DefaultMode, AlwaysJIDs, NeverJIDs) ->
-    decode_prefs_rows(Rows, DefaultMode, [JID|AlwaysJIDs], NeverJIDs);
-decode_prefs_rows([{JID, <<"N">>}|Rows], DefaultMode, AlwaysJIDs, NeverJIDs) ->
-    decode_prefs_rows(Rows, DefaultMode, AlwaysJIDs, [JID|NeverJIDs]);
+decode_prefs_rows([{JID, <<"A">>} | Rows], DefaultMode, AlwaysJIDs, NeverJIDs) ->
+    decode_prefs_rows(Rows, DefaultMode, [JID | AlwaysJIDs], NeverJIDs);
+decode_prefs_rows([{JID, <<"N">>} | Rows], DefaultMode, AlwaysJIDs, NeverJIDs) ->
+    decode_prefs_rows(Rows, DefaultMode, AlwaysJIDs, [JID | NeverJIDs]);
 decode_prefs_rows([], DefaultMode, AlwaysJIDs, NeverJIDs) ->
     {DefaultMode, AlwaysJIDs, NeverJIDs}.

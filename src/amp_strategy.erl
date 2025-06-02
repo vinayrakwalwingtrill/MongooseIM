@@ -62,5 +62,5 @@ deliver_strategy(_, delivered) -> [direct].
 %% in test/amp_resolver_SUITE.erl
 %%
 match_resource_strategy({offline, []}) -> undefined;
-match_resource_strategy({offline, [_|_ManyRes]}) -> other;
-match_resource_strategy({online, [_|_ManyRes]}) -> exact.
+match_resource_strategy({offline, [_ | _ManyRes]}) -> other;
+match_resource_strategy({online, [_ | _ManyRes]}) -> exact.

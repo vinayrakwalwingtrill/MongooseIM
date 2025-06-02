@@ -393,7 +393,7 @@ create_room_with_random_name(HostType, RoomS, Config, AffUsers, Version, Retries
         Other ->
             ?LOG_ERROR(#{what => muc_create_room_with_random_name_retry,
                          candidate_room => RoomU, sub_host => RoomS, reason => Other}),
-            create_room_with_random_name(HostType, RoomS, Config, AffUsers, Version, Retries-1)
+            create_room_with_random_name(HostType, RoomS, Config, AffUsers, Version, Retries - 1)
     end.
 
 create_room_with_specified_name(HostType, RoomUS, Config, AffUsers, Version) ->

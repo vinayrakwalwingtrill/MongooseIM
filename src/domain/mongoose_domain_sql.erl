@@ -386,7 +386,7 @@ transaction(F, Tries, Errors) when Tries > 0 ->
         {aborted, _} -> %% Restart any rolled back transaction
             put(debug_last_transaction_error, Result),
             timer:sleep(100), %% Small break before retry
-            transaction(F, Tries - 1, [Result|Errors]);
+            transaction(F, Tries - 1, [Result | Errors]);
         _ ->
             erase(debug_last_transaction_error),
             simple_result(Result)

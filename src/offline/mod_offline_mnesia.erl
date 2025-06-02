@@ -168,7 +168,7 @@ remove_old_message(LServer, TimeStamp, Rec = #offline_msg{us = {_, LServer}}) ->
     end;
 remove_old_message(_, _, _) -> 0.
 
-is_old_message(MaxAllowedTimeStamp, #offline_msg{timestamp=TimeStamp}) ->
+is_old_message(MaxAllowedTimeStamp, #offline_msg{timestamp = TimeStamp}) ->
     TimeStamp < MaxAllowedTimeStamp.
 
 -spec remove_user(mongooseim:host_type(), jid:luser(), jid:lserver()) -> ok.

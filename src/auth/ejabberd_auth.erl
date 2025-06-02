@@ -434,7 +434,7 @@ entropy(IOList) ->
                     fun(IOContent, Acc) ->
                             get_type_information(IOContent, Acc)
                     end, [0, 0, 0, 0, 0], InputList),
-            length(InputList) * math:log(lists:sum(Set))/math:log(2)
+            length(InputList) * math:log(lists:sum(Set)) / math:log(2)
     end.
 
 -spec config_spec(atom()) -> mongoose_config_spec:config_section().

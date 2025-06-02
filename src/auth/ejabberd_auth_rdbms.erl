@@ -518,7 +518,7 @@ execute_count_users(HostType, LServer, #{}) ->
             execute_successfully(HostType, auth_count_users_estimate, []);
         {true, Driver} when Driver =:= pgsql; Driver =:= cockroachdb ->
             case execute_successfully(HostType, auth_count_users_estimate, []) of
-                {selected,[{<<"-1">>}]} ->
+                {selected, [{<<"-1">>}]} ->
                     execute_successfully(HostType, auth_count_users, [LServer]);
                 Otherwise ->
                     Otherwise
